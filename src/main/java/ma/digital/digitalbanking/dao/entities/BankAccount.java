@@ -9,9 +9,9 @@ import ma.digital.digitalbanking.enumerations.AccountStatus;
 import java.util.Date;
 import java.util.List;
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data @NoArgsConstructor @AllArgsConstructor
-public abstract class BankAccount {
+public class BankAccount {
     @Id
     private String id;
     private double balance;
