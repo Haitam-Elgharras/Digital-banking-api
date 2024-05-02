@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true) // tell lombok to generate equals and hashcode methods from parent class
 @AllArgsConstructor
-@DiscriminatorValue("CA")
 @NoArgsConstructor
 public class CurrentAccount extends BankAccount {
     private double overDraft;
