@@ -1,38 +1,48 @@
 package ma.digital.digitalbanking;
 
-import ma.digital.digitalbanking.dao.entities.AccountOperation;
-import ma.digital.digitalbanking.dao.entities.CurrentAccount;
-import ma.digital.digitalbanking.dao.entities.Customer;
-import ma.digital.digitalbanking.dao.entities.SavingAccount;
+import ma.digital.digitalbanking.service.dtos.CustomerDTO;
 import ma.digital.digitalbanking.dao.repositories.AccountOperationRepository;
 import ma.digital.digitalbanking.dao.repositories.BankAccountRepository;
 import ma.digital.digitalbanking.dao.repositories.CustomerRepository;
 import ma.digital.digitalbanking.enumerations.AccountStatus;
 import ma.digital.digitalbanking.enumerations.OperationType;
-
+import ma.digital.digitalbanking.dao.entities.AccountOperation;
+import ma.digital.digitalbanking.dao.entities.CurrentAccount;
+import ma.digital.digitalbanking.dao.entities.Customer;
+import ma.digital.digitalbanking.dao.entities.SavingAccount;
+import ma.digital.digitalbanking.service.services.interfaces.BankAccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-// inheritance
 
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-public class DigitalBankingApplication {
+public class DigitalBankingBackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DigitalBankingApplication.class, args);
+        SpringApplication.run(DigitalBankingBackendApplication.class, args);
+    }
+    @Bean
+    CommandLineRunner commandLineRunner(BankAccountService bankAccountService){
+        return args -> {
+            Stream.of("ahmed","Soufiane","Salma").forEach(name->{
+                CustomerDTO customer = new CustomerDTO();
+                customer.setName(name);
+                customer.setEmail(name+"@email.com");
+                bankAccountService.saveCustomer(customer);
+            });
+        };
     }
     @Bean
     CommandLineRunner start(CustomerRepository customerRepository,
                             AccountOperationRepository accountOperationRepository,
                             BankAccountRepository bankAccountRepository){
         return args -> {
-            Stream.of("ahmed","omar","soufiane").forEach(name->{
+            Stream.of("hamid","taha","mohammed").forEach(name->{
                 Customer customer = new Customer();
                 customer.setName(name);
                 customer.setEmail(name+"@email.com");

@@ -9,8 +9,11 @@ import ma.digital.digitalbanking.enumerations.AccountStatus;
 import java.util.Date;
 import java.util.List;
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Data @NoArgsConstructor @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "TYPE",discriminatorType = DiscriminatorType.STRING,length = 4)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BankAccount {
     @Id
     private String id;
