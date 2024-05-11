@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/bankAccounts")
 public class BankAccountRestController {
     private BankAccountService bankAccountService;
@@ -46,14 +47,14 @@ public class BankAccountRestController {
         return bankAccountService.getAccountHistory(accountId,page,size);
     }
 
-    @PostMapping("/{accountId}/debit")
-    public void debit(@PathVariable String accountId,@RequestBody AccountOperationRequest accountOperationRequest){
-        bankAccountService.debit(accountId,accountOperationRequest.getAmount(),accountOperationRequest.getDescription());
+    @PostMapping("/debit")
+    public AccountOperationRequest debit(@RequestBody AccountOperationRequest request){
+       return bankAccountService.debit(request.getAccountId(),request.getAmount(),request.getDescription());
     }
 
-    @PostMapping("/{accountId}/credit")
-    public void credit(@PathVariable String accountId,@RequestBody AccountOperationRequest accountOperationRequest){
-        bankAccountService.credit(accountId,accountOperationRequest.getAmount(),accountOperationRequest.getDescription());
+    @PostMapping("/credit")
+    public AccountOperationRequest credit(@RequestBody AccountOperationRequest request){
+        return bankAccountService.credit(request.getAccountId(),request.getAmount(),request.getDescription());
     }
 
     @PostMapping("/transfer")

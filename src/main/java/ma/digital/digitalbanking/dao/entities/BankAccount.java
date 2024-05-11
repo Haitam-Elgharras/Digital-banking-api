@@ -23,6 +23,6 @@ public class BankAccount {
     private AccountStatus status;
     @ManyToOne
     private Customer customer;
-    @OneToMany(mappedBy = "bankAccount", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bankAccount", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<AccountOperation> accountOperations;
 }

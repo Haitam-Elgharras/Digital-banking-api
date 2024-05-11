@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class TransferDTO {
     private String bankAccountSourceId;
-    private String bankAccountDestinationId;
     private double amount;
+    private String description;
+    private String bankAccountDestinationId;
 }

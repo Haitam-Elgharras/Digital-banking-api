@@ -10,8 +10,8 @@ public interface BankAccountService {
     SavingBankAccountDTO saveSavingAccount(double initialBalance, Long customerId, double rate);
     List<CustomerDTO> listCustomers();
     BankAccountDTO getBankAccount(String accountId);
-    void debit(String accountId,double amount,String description);
-    void credit(String accountId,double amount,String description);
+    AccountOperationRequest debit(String accountId, double amount, String description);
+    AccountOperationRequest credit(String accountId, double amount, String description);
     void transfer(String accountIdSource,String accountIdDestination,double amount);
 
     CustomerDTO getCustomer(Long customerId);
@@ -25,4 +25,6 @@ public interface BankAccountService {
     List<AccountOperationDTO> accountHistory(String accountId);
 
     AccountHistoryDTO getAccountHistory(String accountId,int page,int size);
+
+    List<CustomerDTO> searchCustomer(String keyword);
 }

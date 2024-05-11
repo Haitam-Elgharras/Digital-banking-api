@@ -85,7 +85,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public void debit(String accountId, double amount, String description) {
+    public AccountOperationRequest debit(String accountId, double amount, String description) {
         BankAccount bankAccount = bankAccountRepository.findById(accountId).orElseThrow(()->
                 new RuntimeException("Bank Account not found")
         );
@@ -101,12 +101,21 @@ public class BankAccountServiceImpl implements BankAccountService {
         accountOperation.setBankAccount(bankAccount);
         bankAccount.getAccountOperations().add(accountOperation);
         accountOperationRepository.save(accountOperation);
+
+
         bankAccount.setBalance(bankAccount.getBalance()-amount);
         bankAccountRepository.save(bankAccount);
+
+        AccountOperationRequest request = new AccountOperationRequest();
+        request.setAccountId(accountId);
+        request.setAmount(amount);
+        request.setDescription(description);
+
+        return request;
     }
 
     @Override
-    public void credit(String accountId, double amount, String description) {
+    public AccountOperationRequest credit(String accountId, double amount, String description) {
         BankAccount bankAccount = bankAccountRepository.findById(accountId).orElseThrow(()->
                 new RuntimeException("Bank Account not found")
         );
@@ -118,9 +127,17 @@ public class BankAccountServiceImpl implements BankAccountService {
         accountOperation.setBankAccount(bankAccount);
         bankAccount.getAccountOperations().add(accountOperation);
         accountOperationRepository.save(accountOperation);
-        bankAccount.setBalance(bankAccount.getBalance()+amount);
 
+        bankAccount.setBalance(bankAccount.getBalance()+amount);
         bankAccountRepository.save(bankAccount);
+
+        AccountOperationRequest request = new AccountOperationRequest();
+        request.setAccountId(accountId);
+        request.setAmount(amount);
+        request.setDescription(description);
+
+        return request;
+
     }
 
     @Override
@@ -185,4 +202,9 @@ public class BankAccountServiceImpl implements BankAccountService {
         return accountHistoryDTO;
     }
 
+    @Override
+    public List<CustomerDTO> searchCustomer(String keyword) {
+        List<Customer> customers = customerRepository.findByNameContains(keyword);
+        return customers.stream().map(customer -> bankAccountMapper.fromCustomer(customer)).toList();
+    }
 }
