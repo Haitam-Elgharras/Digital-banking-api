@@ -24,8 +24,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -60,9 +64,9 @@ public class SecurityConfig {
         return http
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeRequests(ar -> ar.requestMatchers("/auth/**").permitAll())
                 .authorizeRequests(ar -> ar.anyRequest().authenticated())
-//                .httpBasic(Customizer.withDefaults())// for testing we can send the username and password in Base64 in the authorization header
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
@@ -70,7 +74,6 @@ public class SecurityConfig {
     // jwt encoder where we can create a jwt token to send it to the client
     @Bean
     JwtEncoder jwtEncoder() {
-//        String secretKey = "45yrkluajzd40arskbzzu9fyx7mwfdvjt9txqz8abcbyg7zyoevd5bwns5mx6xn5";
         return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey.getBytes()));
 
     }
@@ -78,7 +81,6 @@ public class SecurityConfig {
     // jwt decoder : when recieving a request from the client this beans will intercept the request and get the jwt token from the authorization header then decode it
    @Bean
     JwtDecoder jwtDecoder() {
-//        String secretKey = "45yrkluajzd40arskbzzu9fyx7mwfdvjt9txqz8abcbyg7zyoevd5bwns5mx6xn5";
         SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "RSA");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
     }
@@ -92,6 +94,18 @@ public class SecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
 
         return new ProviderManager(daoAuthenticationProvider);
+    }
+
+    // to allow all origins
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 
